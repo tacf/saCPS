@@ -50,8 +50,7 @@ instance Show S where
 						 ,show s]
 		INV x f vec s -> list2string
 						 [x,":=",f,"("
-						 ,foldr (++) "," (map show ((reverse.tail.reverse) vec))
-						 ,(show.head.reverse) vec,");\n"
+						 ,printVector show vec,");\n"
 						 ,show s]
 	 	IF e s1 s2	  -> list2string
 	 		 			 ["if(",show e,"){\n"
@@ -63,9 +62,7 @@ instance Show S where
 instance Show Proc where
 	show (PROC l vec s) = list2string
 						  [l,":=proc("
-						  ,foldr (++) "," ((reverse.tail.reverse) vec)
-						  ,(head.reverse) vec
-						  ,"){\n"
+						  ,printVector id vec,"){\n"
 						  ,show s
 						  ,"\n}\n"]
 
@@ -85,10 +82,7 @@ instance Show M where
 						  	,x,"."
 						  	,show m,")"]
 		LINV x f vec m -> list2string
-						  ["(",f," "
-						  	,foldr (++) "" (map show ((reverse.tail.reverse) vec))
-						  	,(show.head.reverse) vec
-						  	," )("
+						  ["(",f,"",printVector show vec," )("
 						  	,show m
 						  	,")"]
 	 	LIF b m1 m2	   -> list2string
@@ -99,11 +93,17 @@ instance Show M where
 instance Show LProc where
 	show (LPROC l vec m) = list2string
 						   [l,":=\\proc "
-						   ,foldr (++) " " ((reverse.tail.reverse) vec) 
-						   ,(head.reverse) vec 
-						   ,")."
+						   , printVector id vec,")."
 						   ,show m
 						   ,"\n"]
 
+printVector:: (Show a) => (a -> String) -> [a] -> String
+printVector f e = case e of 
+          []    -> ""
+          e1:[] -> f e1
+          _ -> (foldr (++) ((f.last) e) 
+                    (map ((++",").f) 
+                        ((reverse.tail.reverse) e)))
+                        
 list2string :: [String] -> String
 list2string = foldr (++) ""
