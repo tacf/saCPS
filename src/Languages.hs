@@ -20,7 +20,7 @@ data S  = ATRB Label E S
 
 -- Functional command sequences
 data M  = BNDR Label B M              
-	| LINV Label Label [E] M 
+	| LINV Label Label [B] M 
 	| LIF B M M                  
 	| LRET B                      
 
