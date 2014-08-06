@@ -19,6 +19,7 @@ laDef = LanguageDef
            , reservedNames  = ["proc","if","else","ret"]
            , caseSensitive  = True
            }
+           
 
 la :: TokenParser st
 la = makeTokenParser laDef
@@ -29,13 +30,8 @@ number  = do{ ds <- many1 digit
             ; return (read ds)
             }
 
-parseVectorE :: Parser [E]
-parseVectorE = do { l <- sepBy parseE (skipMany1 (space <|> char ','))
-                 ; return l
-                 }
-
-parseVector :: Parser [Label]
-parseVector = do { l <- sepBy (identifier la) (skipMany1 (space <|> char ','))
+parseVector :: Parser a -> Parser [a]
+parseVector p = do { l <- sepBy p (skipMany1 (space <|> char ','))
                  ; return l
                  }
 
@@ -47,7 +43,7 @@ parseE = do { c <- number;
 
 parseInv :: Parser (Label,[E])
 parseInv = do { l <- (identifier la) 
-              ; vec <- (parens la) parseVectorE
+              ; vec <- (parens la) (parseVector parseE)
               ; return $ (l,vec)
               }
 
@@ -76,7 +72,7 @@ parseS = do { (reserved la) "ret"
                 <|>
                 do {
                   l <- (identifier la)
-                ; vec <- (parens la) parseVectorE
+                ; vec <- (parens la) (parseVector parseE)
                 ; char ';'
                 ; s1 <- parseS
                 ; return $ INV x l vec s1
@@ -88,7 +84,7 @@ parseProc :: Parser Proc
 parseProc = do { l <- (identifier la)
                ; (reservedOp la) ":="
                ; (reserved la) "proc"
-               ; vec  <- (parens la) parseVector
+               ; vec  <- (parens la) (parseVector (identifier la))
                ; body <- (braces la) parseS
                ; return $ PROC l vec body
                }
@@ -98,6 +94,8 @@ parseProgram :: Parser Program
 parseProgram = do { l <- sepBy parseProc (skipMany space)
                  ; return l
                  }
+
+
 
 
 
