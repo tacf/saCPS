@@ -44,7 +44,7 @@ instance Show E where
 instance Show S where
 	show s = case s of
 		RET e 	      -> list2string
-						 ["ret(",show e,");"]
+						 ["ret(",show e,")"]
 		ATRB x e s    -> list2string
 						 [x,":=",show e,";\n"
 						 ,show s]
