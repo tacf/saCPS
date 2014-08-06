@@ -100,12 +100,4 @@ parseProgram = do { l <- sepBy parseProc (skipMany space)
                  }
 
 
-run :: Parser Program -> String -> IO ()
-run p input
-        = case (parse p "" input) of
-            Left err -> do{ putStr "parse error at "
-                          ; print err
-                          }
-            Right x  -> (putStrLn.show) (map la2cps x)
-
 
