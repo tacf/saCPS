@@ -16,7 +16,7 @@ laDef = LanguageDef
            , opStart        = opLetter laDef
            , opLetter       = oneOf "+-"
            , reservedOpNames= [":="]
-           , reservedNames  = ["proc","if","else"]
+           , reservedNames  = ["proc","if","else","ret"]
            , caseSensitive  = True
            }
 
@@ -52,7 +52,7 @@ parseInv = do { l <- (identifier la)
               }
 
 parseS :: Parser S
-parseS = do { string "ret"
+parseS = do { (reserved la) "ret"
             ; e <- (parens la) parseE
             ; return $ RET e
             }
