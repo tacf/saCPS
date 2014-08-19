@@ -22,10 +22,10 @@ laDef = LanguageDef
 
 cpsDef :: LanguageDef st
 cpsDef = LanguageDef 
-           { commentStart   = "/*"
+           {commentStart   = "/*"
            , commentEnd     = "*/"
            , commentLine    = "//"
-           , nestedComments = True
+          , nestedComments = True
            , identStart     = letter
            , identLetter    = alphaNum
            , opStart        = opLetter laDef
@@ -102,6 +102,7 @@ parseS = do { (reserved la) "ret"
             ; (reservedOp la) ":="
             ; exp <- try (do { e <- parseE
                              ; char ';'
+                             ; (skipMany1 (space <|> char '\n'))
                              ; s1 <- parseS
                              ; return $ ATRB x e s1
                              } )
@@ -109,6 +110,7 @@ parseS = do { (reserved la) "ret"
                           do { l <- (identifier la)
                              ; vec <- (parens la) (parseVector ',' parseE)
                              ; char ';'
+                             ; (skipMany1 (space <|> char '\n'))
                              ; s1 <- parseS
                              ; return $ INV x l vec s1
                              }
