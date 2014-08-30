@@ -4,11 +4,13 @@ module VM (
 		updateState,
 		step,
 		isFinalConfig,
+        runProgram,
 		-- Functional Execution
 		evalInClosure,
 		updateClosure,
 		stepL,
-		isFinalLConfig
+		isFinalLConfig,
+        runLProgram
 		) where
 
 import Data.List
@@ -63,6 +65,7 @@ step (ATRB x e s, st) = (s,updateState x (evalInState e st) st)
 step (IF e s1 s2, st) = case (evalInState e st) of
 						 0 -> (s2, st)
 						 _ -> (s1, st)
+                        
 
 stepL :: LConfig -> LConfig
 stepL (LRET b, cl) = (LRET b, cl)
@@ -75,3 +78,29 @@ stepL (LIF b m1 m2, cl) = case (evalInClosure b cl) of
 						(Just 0) -> (m2, cl)
 						(Just x) -> (m1, cl)
 						Nothing -> (LRET (ID "error"), [])
+
+runProgram :: Config -> IO ()
+runProgram c = do
+                let x = step c
+                putStrLn ("###Command###\n"
+                         ++show (fst x)
+                         ++"\n####State####\n"
+                         ++show (snd x)
+                         ++"\n#############\n"
+                         ++"---------------------")
+                if (isFinalConfig x)
+                then putStrLn "Computation Ended"
+                else runProgram x
+
+runLProgram :: LConfig -> IO ()
+runLProgram c = do
+                let x = stepL c
+                putStrLn ("###Command###\n"
+                         ++show (fst x)
+                         ++"\n####Closure####\n"
+                         ++show (snd x)
+                         ++"\n#############\n"
+                         ++"---------------------")
+                if (isFinalLConfig x)
+                then putStrLn "Computation Ended"
+                else runLProgram x
