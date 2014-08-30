@@ -1,0 +1,13 @@
+f := proc(x,y){
+    if(x) {
+        ret(y)
+    } else {
+        x:=1;
+        if(y){
+            ret(x)
+        } else {
+            y:=x;
+            ret(y)
+        }
+    }
+}
