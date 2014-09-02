@@ -10,13 +10,15 @@ module Utilities (
 		  isWF, 
 		  getProcBody, 
 		  getProgramRefList, 
-		  getProcRef, 
+		  getProcRef,
+          getProcPara, 
 		  findProc,
 		  -- CPS Functions
 		  isLWF,
 		  getLProcBody,
 		  getLProgramRefList,
 		  getLProcRef,
+          getLProcPara,
 		  findLProc) where
 
 import Languages
@@ -97,6 +99,14 @@ getProgramRefList = map (\(PROC l _ _) -> l)
 -- Returns a list with all the references from a program
 getLProgramRefList :: LProgram -> [Label]
 getLProgramRefList = map (\(LPROC l _ _) -> l) 
+
+-- Returns LA procedure parameters list
+getProcPara :: Proc -> [Label]
+getProcPara (PROC _ l _ ) = l
+
+-- Returns CPS procedure parameters list
+getLProcPara :: LProc -> [Label]
+getLProcPara (LPROC _ l _ ) = l
 
 -- Returns LA procedure body
 getProcBody :: Proc -> S
