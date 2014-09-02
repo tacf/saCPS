@@ -1,0 +1,19 @@
+f := proc(x,y){
+    if(x) {
+        ret(y)
+    } else {
+        x:=g(2);
+        if(y){
+            ret(x)
+        } else {
+            y:=x;
+            ret(y)
+        }
+    }
+}
+
+g := proc(w){
+    z := w;
+    z := 2;
+    ret(z)
+}
