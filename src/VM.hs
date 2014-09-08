@@ -1,15 +1,7 @@
 module VM (
 		-- Imperative Execution
-		evalInState,
-		updateState,
-		step,
-		isFinalConfig,
         runProgram,
 		-- Functional Execution
-		evalInClosure,
-		updateClosure,
-		stepL,
-		isFinalLConfig,
         runLProgram
 		) where
 
